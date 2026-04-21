@@ -22,19 +22,22 @@ function App() {
 
   return (
     <div className="container">
-      <h1>Job Finder 🚀</h1>
+      <div className="header">
+        <h1>💼 Job Finder <span>🚀</span></h1>
+        <p className="subtitle">Find your dream remote job in seconds</p>
+        <Link to="/saved">
+          <button className="saved-btn">💖 Saved Jobs</button>
+        </Link>
+      </div>
 
-      <Link to="/saved">
-        <button>Saved Jobs 💖</button>
-      </Link>
-
-      <SearchBar query={query} setQuery={setQuery} onSearch={() => fetchJobs(query)} />
-
-      <Filter filter={filter} setFilter={setFilter} />
+      <div className="search-box">
+        <SearchBar query={query} setQuery={setQuery} onSearch={() => fetchJobs(query)} />
+        <Filter filter={filter} setFilter={setFilter} />
+      </div>
 
       <Status text={status} />
 
-      <p>Showing {filteredJobs.length} jobs</p>
+      {jobs.length > 0 && <p className="job-count">Showing {filteredJobs.length} jobs</p>}
 
       <JobList jobs={filteredJobs} />
     </div>
