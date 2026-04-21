@@ -1,0 +1,15 @@
+.container {
+  max-width: 800px;
+  margin: auto;
+}
+
+.card {
+  border: 1px solid #ccc;
+  padding: 10px;
+  margin: 10px 0;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+}
