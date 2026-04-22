@@ -201,3 +201,79 @@ input,button{
 @keyframes blink {
     50% { opacity: 0.5; }
 }
+.quick-searches {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  justify-content: center;
+  margin: 15px 0;
+}
+
+.tag-btn {
+  background: white;
+  border: 2px solid #1d2671;
+  color: #1d2671;
+  padding: 6px 16px;
+  border-radius: 20px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: bold;
+  transition: 0.2s;
+}
+
+.tag-btn:hover {
+  background: #1d2671;
+  color: white;
+}
+
+.main-layout {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  margin-top: 10px;
+}
+
+.sidebar {
+  width: 240px;
+  flex-shrink: 0;
+}
+
+.sidebar-card {
+  background: rgba(255,255,255,0.8);
+  backdrop-filter: blur(10px);
+  border-radius: 15px;
+  padding: 15px;
+  margin-bottom: 15px;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+}
+
+.sidebar-card h3 {
+  color: #1d2671;
+  margin: 0 0 10px;
+  font-size: 15px;
+}
+
+.sidebar-card p {
+  font-size: 13px;
+  color: #555;
+  margin: 6px 0;
+}
+
+.trending-item {
+  cursor: pointer;
+  transition: 0.2s;
+  color: #1d2671 !important;
+  font-weight: 500;
+}
+
+.trending-item:hover {
+  color: #c33764 !important;
+  transform: translateX(4px);
+}
+
+.jobs-area {
+  flex: 1;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 15px;
+}
