@@ -53,6 +53,9 @@ function App() {
   <h1>💼 Job Finder 🚀</h1>
   <p className="subtitle">Find your dream remote job in seconds</p>
   <div className="header-buttons">
+    <Link to="/analyzer">
+  <button className="tracker-btn">🤖 Resume Analyzer</button>
+</Link>
     <Link to="/saved">
       <button className="saved-btn">💖 Saved Jobs</button>
     </Link>

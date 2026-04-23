@@ -10,6 +10,7 @@ import SavedJobs from './pages/SavedJobs.jsx'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
 import JobTracker from './pages/JobTracker.jsx'
+import ResumeAnalyzer from './pages/ResumeAnalyzer.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -21,6 +22,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
           <Route path="/tracker" element={<JobTracker />} />
+          <Route path="/analyzer" element={<ResumeAnalyzer />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>

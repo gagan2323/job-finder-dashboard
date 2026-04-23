@@ -594,3 +594,153 @@ h1 {
   cursor: pointer;
   font-size: 0.9rem;
 }
+/* Resume Analyzer */
+.analyzer-container {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 30px 20px;
+}
+
+.analyzer-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.analyzer-box {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.analyzer-box label {
+  color: #a78bfa;
+  font-weight: bold;
+  font-size: 1rem;
+}
+
+.analyzer-textarea {
+  height: 280px;
+  padding: 14px;
+  background: #1a1a2e;
+  border: 1px solid #7c3aed;
+  border-radius: 10px;
+  color: white;
+  font-size: 0.9rem;
+  resize: vertical;
+  outline: none;
+  line-height: 1.6;
+}
+
+.analyzer-textarea:focus {
+  border-color: #a78bfa;
+}
+
+.analyze-btn {
+  display: block;
+  margin: 0 auto 30px;
+  padding: 14px 40px;
+  background: #7c3aed;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+
+.analyze-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.analyze-btn:hover:not(:disabled) {
+  background: #6d28d9;
+}
+
+.result-card {
+  background: #1a1a2e;
+  border: 1px solid #7c3aed;
+  border-radius: 16px;
+  padding: 30px;
+}
+
+.score-circle {
+  width: 140px;
+  height: 140px;
+  border-radius: 50%;
+  border: 5px solid;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 30px;
+}
+
+.score-circle h2 {
+  font-size: 2.2rem;
+  margin: 0;
+}
+
+.score-circle p {
+  color: #888;
+  margin: 0;
+}
+
+.result-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px;
+  margin-bottom: 24px;
+}
+
+.result-section h3 {
+  color: #a78bfa;
+  margin-bottom: 12px;
+}
+
+.skills-list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.skill-tag {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+}
+
+.skill-tag.matched {
+  background: #065f46;
+  color: #6ee7b7;
+}
+
+.skill-tag.missing {
+  background: #7f1d1d;
+  color: #fca5a5;
+}
+
+.suggestion-box {
+  background: #0f0f1a;
+  border-left: 4px solid #7c3aed;
+  padding: 16px 20px;
+  border-radius: 8px;
+}
+
+.suggestion-box h3 {
+  color: #a78bfa;
+  margin-bottom: 8px;
+}
+
+.suggestion-box p {
+  color: #ccc;
+  line-height: 1.6;
+}
+
+@media (max-width: 768px) {
+  .analyzer-grid, .result-grid {
+    grid-template-columns: 1fr;
+  }
+}
