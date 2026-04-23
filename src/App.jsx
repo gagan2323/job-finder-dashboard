@@ -18,11 +18,16 @@ function App() {
 
   const filteredJobs = jobs.filter(job => {
     const matchFilter = filter === "" ||
-      job.category?.toLowerCase().includes(filter.toLowerCase());
+      job.category?.toLowerCase().includes(filter.toLowerCase()) ||
+      job.title?.toLowerCase().includes(filter.toLowerCase()) ||
+      job.tags?.some(t => t.toLowerCase().includes(filter.toLowerCase()));
+    
     const matchQuery = query === "" ||
       job.title?.toLowerCase().includes(query.toLowerCase()) ||
       job.company_name?.toLowerCase().includes(query.toLowerCase()) ||
-      job.tags?.some(t => t.toLowerCase().includes(query.toLowerCase()));
+      job.tags?.some(t => t.toLowerCase().includes(query.toLowerCase())) ||
+      job.category?.toLowerCase().includes(query.toLowerCase());
+    
     return matchFilter && matchQuery;
   });
 
@@ -36,6 +41,7 @@ function App() {
 
   const handleTrendingClick = (role) => {
     setQuery(role);
+    setFilter(""); // ← reset filter when clicking trending
     fetchJobs(role);
   };
 

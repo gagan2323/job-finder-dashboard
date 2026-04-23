@@ -14,30 +14,41 @@ export default function useFetchJobs() {
     setJobs([]);
 
     try {
-      // Fetch ALL categories simultaneously
-      const urls = [
-        `https://remotive.com/api/remote-jobs?search=${encodeURIComponent(query)}`,
-        `https://remotive.com/api/remote-jobs?category=software-dev`,
-        `https://remotive.com/api/remote-jobs?category=design`,
-        `https://remotive.com/api/remote-jobs?category=data`,
-        `https://remotive.com/api/remote-jobs?category=devops-sysadmin`,
-        `https://remotive.com/api/remote-jobs?category=product`,
-        `https://remotive.com/api/remote-jobs?category=marketing`,
-        `https://remotive.com/api/remote-jobs?category=customer-support`,
-        `https://remotive.com/api/remote-jobs?category=finance-legal`,
-        `https://remotive.com/api/remote-jobs?category=hr`,
+      const categories = [
+        "software-dev",
+        "design",
+        "data",
+        "devops-sysadmin",
+        "product",
+        "marketing",
+        "customer-support",
+        "finance-legal",
+        "hr",
+        "qa",
+        "writing",
+        "all-others",
       ];
 
-      const results = await Promise.all(
+      // Fetch search + ALL categories at same time
+      const urls = [
+        `https://remotive.com/api/remote-jobs?search=${encodeURIComponent(query)}`,
+        ...categories.map(c => `https://remotive.com/api/remote-jobs?category=${c}`)
+      ];
+
+      const results = await Promise.allSettled(
         urls.map(url =>
-          fetch(url)
-            .then(res => res.json())
-            .catch(() => ({ jobs: [] }))
+          fetch(url).then(res => res.json())
         )
       );
 
-      const allJobs = results.flatMap(r => r.jobs || []);
-      const unique = Array.from(new Map(allJobs.map(j => [j.id, j])).values());
+      const allJobs = results
+        .filter(r => r.status === "fulfilled")
+        .flatMap(r => r.value.jobs || []);
+
+      // Remove duplicates
+      const unique = Array.from(
+        new Map(allJobs.map(j => [j.id, j])).values()
+      );
 
       if (unique.length === 0) {
         setStatus("No jobs found");
