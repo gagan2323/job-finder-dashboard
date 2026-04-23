@@ -1,35 +1,48 @@
 import { useState } from "react";
 
-export default function useFetchJobs(){
-    const [jobs,setJobs]=useState([]);
-    const [status,setStatus]=useState("");
+export default function useFetchJobs() {
+  const [jobs, setJobs] = useState([]);
+  const [status, setStatus] = useState("");
 
-    const fetchJobs=async(query)=>{
-        if(!query){
-            setStatus("Please enter a job role");
-            return ;
-        }
+  const fetchJobs = async (query) => {
+    if (!query) {
+      setStatus("Please enter a job role");
+      return;
+    }
 
-        setStatus("Loading jobs...");
-        setJobs([]);
+    setStatus("Loading jobs...");
+    setJobs([]);
 
-        try{
-            const res=await fetch(
-                `https://remotive.com/api/remote-jobs?search=${query}`
-                );
-            const data =await res.json();
+    try {
+      // Fetch multiple related searches at once
+      const searches = [
+        query,
+        `${query} developer`,
+        `${query} engineer`,
+      ];
 
-            if(data.jobs.length===0){
-                setStatus("No jobs found");
-                return ;
-            }
+      const results = await Promise.all(
+        searches.map(q =>
+          fetch(`https://remotive.com/api/remote-jobs?search=${encodeURIComponent(q)}&limit=50`)
+            .then(res => res.json())
+        )
+      );
 
-            setJobs(data.jobs); 
-            setStatus("");
-        }
-        catch (err) { 
-        setStatus("Error loading jobs"); 
-        }
-    };
-    return { jobs, status, fetchJobs };
+      // Combine all results and remove duplicates by id
+      const allJobs = results.flatMap(r => r.jobs || []);
+      const unique = Array.from(new Map(allJobs.map(j => [j.id, j])).values());
+
+      if (unique.length === 0) {
+        setStatus("No jobs found");
+        return;
+      }
+
+      setJobs(unique);
+      setStatus("");
+    } catch (err) {
+      setStatus("Error loading jobs");
+    }
+  };
+
+  return { jobs, status, fetchJobs };
 }
