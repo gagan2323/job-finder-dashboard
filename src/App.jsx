@@ -56,6 +56,9 @@ function App() {
     <Link to="/saved">
       <button className="saved-btn">💖 Saved Jobs</button>
     </Link>
+      <Link to="/tracker">
+      <button className="tracker-btn">📋 Job Tracker</button>
+    </Link>
     {user ? (
       <div className="user-info">
         <span>👋 {user.name}</span>

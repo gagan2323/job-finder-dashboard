@@ -9,6 +9,7 @@ import App from './App.jsx'
 import SavedJobs from './pages/SavedJobs.jsx'
 import Login from './pages/Login.jsx'
 import Signup from './pages/Signup.jsx'
+import JobTracker from './pages/JobTracker.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
@@ -19,6 +20,7 @@ createRoot(document.getElementById('root')).render(
           <Route path="/saved" element={<SavedJobs />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<Signup />} />
+          <Route path="/tracker" element={<JobTracker />} />
         </Routes>
       </AuthProvider>
     </BrowserRouter>
