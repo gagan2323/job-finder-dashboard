@@ -14,11 +14,23 @@ export default function useFetchJobs() {
     setJobs([]);
 
     try {
-      const terms = [query, "developer", "engineer", "designer", "analyst", "remote"];
-      
+      // Fetch ALL categories simultaneously
+      const urls = [
+        `https://remotive.com/api/remote-jobs?search=${encodeURIComponent(query)}`,
+        `https://remotive.com/api/remote-jobs?category=software-dev`,
+        `https://remotive.com/api/remote-jobs?category=design`,
+        `https://remotive.com/api/remote-jobs?category=data`,
+        `https://remotive.com/api/remote-jobs?category=devops-sysadmin`,
+        `https://remotive.com/api/remote-jobs?category=product`,
+        `https://remotive.com/api/remote-jobs?category=marketing`,
+        `https://remotive.com/api/remote-jobs?category=customer-support`,
+        `https://remotive.com/api/remote-jobs?category=finance-legal`,
+        `https://remotive.com/api/remote-jobs?category=hr`,
+      ];
+
       const results = await Promise.all(
-        terms.map(t =>
-          fetch(`https://remotive.com/api/remote-jobs?search=${encodeURIComponent(t)}`)
+        urls.map(url =>
+          fetch(url)
             .then(res => res.json())
             .catch(() => ({ jobs: [] }))
         )

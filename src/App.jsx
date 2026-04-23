@@ -12,22 +12,32 @@ function App() {
   const [filter, setFilter] = useState("");
   const { jobs, status, fetchJobs } = useFetchJobs();
 
-  // Load default jobs on startup
   useEffect(() => {
     fetchJobs("developer");
   }, []);
 
-  const filteredJobs = jobs.filter(
-    (job) =>
-      (filter === "" ||
-        job.category.toLowerCase().includes(filter.toLowerCase())) &&
-      job.title.toLowerCase().includes(query.toLowerCase())
-  );
+  const filteredJobs = jobs.filter(job => {
+    const matchFilter = filter === "" ||
+      job.category?.toLowerCase().includes(filter.toLowerCase());
+    const matchQuery = query === "" ||
+      job.title?.toLowerCase().includes(query.toLowerCase()) ||
+      job.company_name?.toLowerCase().includes(query.toLowerCase()) ||
+      job.tags?.some(t => t.toLowerCase().includes(query.toLowerCase()));
+    return matchFilter && matchQuery;
+  });
 
-  const quickSearches = [
-    "React", "Python", "JavaScript", "Node.js",
-    "UI/UX", "Data Science", "DevOps", "Flutter"
+  const quickSearches = ["React", "Python", "JavaScript", "Node.js", "UI/UX", "Data Science", "DevOps", "Flutter", "AI", "Java"];
+
+  const trendingRoles = [
+    "React Developer", "Python Engineer", "Data Scientist",
+    "DevOps Engineer", "UI Designer", "Node.js Developer",
+    "AI Engineer", "Java Developer", "Product Manager", "Flutter Developer"
   ];
+
+  const handleTrendingClick = (role) => {
+    setQuery(role);
+    fetchJobs(role);
+  };
 
   return (
     <div className="container">
@@ -44,14 +54,10 @@ function App() {
         <Filter filter={filter} setFilter={setFilter} />
       </div>
 
-      {/* Quick Search Tags */}
       <div className="quick-searches">
         {quickSearches.map(tag => (
-          <button
-            key={tag}
-            className="tag-btn"
-            onClick={() => { setQuery(tag); fetchJobs(tag); }}
-          >
+          <button key={tag} className="tag-btn"
+            onClick={() => { setQuery(tag); fetchJobs(tag); }}>
             {tag}
           </button>
         ))}
@@ -60,26 +66,20 @@ function App() {
       <Status text={status} />
 
       {jobs.length > 0 && (
-        <p className="job-count">✅ Showing {filteredJobs.length} jobs</p>
+        <p className="job-count">✅ Showing {filteredJobs.length} of {jobs.length} jobs</p>
       )}
 
-      {/* Two column layout */}
       <div className="main-layout">
-        {/* Left Sidebar */}
         <div className="sidebar">
           <div className="sidebar-card">
             <h3>🔥 Trending Roles</h3>
-            {["React Developer", "Python Engineer", "Data Scientist",
-              "DevOps Engineer", "UI Designer", "Node.js Dev"].map(role => (
-              <p key={role}
-                className="trending-item"
-                onClick={() => { setQuery(role); fetchJobs(role); }}
-              >
+            {trendingRoles.map(role => (
+              <p key={role} className="trending-item"
+                onClick={() => handleTrendingClick(role)}>
                 → {role}
               </p>
             ))}
           </div>
-
           <div className="sidebar-card">
             <h3>💡 Tips</h3>
             <p>✅ Search by skill or role</p>
@@ -89,7 +89,6 @@ function App() {
           </div>
         </div>
 
-        {/* Job List */}
         <div className="jobs-area">
           <JobList jobs={filteredJobs} />
         </div>
