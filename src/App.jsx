@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
-import { Link } from "react-router-dom";
-
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "./context/AuthContext";
 import useFetchJobs from "./hooks/useFetchJobs";
 import SearchBar from "./components/SearchBar";
 import Filter from "./components/Filter";
@@ -8,6 +8,8 @@ import JobList from "./components/JobList";
 import Status from "./components/Status";
 
 function App() {
+  const { user, logout } = useAuth();
+  const navigate = useNavigate();
   const [query, setQuery] = useState("");
   const [filter, setFilter] = useState("");
   const { jobs, status, fetchJobs } = useFetchJobs();
@@ -48,12 +50,26 @@ function App() {
   return (
     <div className="container">
       <div className="header">
-        <h1>💼 Job Finder 🚀</h1>
-        <p className="subtitle">Find your dream remote job in seconds</p>
-        <Link to="/saved">
-          <button className="saved-btn">💖 Saved Jobs</button>
-        </Link>
+  <h1>💼 Job Finder 🚀</h1>
+  <p className="subtitle">Find your dream remote job in seconds</p>
+  <div className="header-buttons">
+    <Link to="/saved">
+      <button className="saved-btn">💖 Saved Jobs</button>
+    </Link>
+    {user ? (
+      <div className="user-info">
+        <span>👋 {user.name}</span>
+        <button className="logout-btn" onClick={() => { logout(); navigate("/"); }}>
+          Logout
+        </button>
       </div>
+    ) : (
+      <Link to="/login">
+        <button className="login-btn">🔐 Login</button>
+      </Link>
+    )}
+  </div>
+</div>
 
       <div className="search-box">
         <SearchBar query={query} setQuery={setQuery} onSearch={() => fetchJobs(query)} />

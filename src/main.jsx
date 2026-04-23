@@ -2,18 +2,25 @@ import { StrictMode } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Routes, Route } from "react-router-dom"
 
-import './style.css'        // ← ADD HERE
+import './style.css'
 
+import { AuthProvider } from './context/AuthContext'
 import App from './App.jsx'
 import SavedJobs from './pages/SavedJobs.jsx'
+import Login from './pages/Login.jsx'
+import Signup from './pages/Signup.jsx'
 
 createRoot(document.getElementById('root')).render(
   <StrictMode>
     <BrowserRouter>
-      <Routes>
-        <Route path="/" element={<App />} />
-        <Route path="/saved" element={<SavedJobs />} />
-      </Routes>
+      <AuthProvider>
+        <Routes>
+          <Route path="/" element={<App />} />
+          <Route path="/saved" element={<SavedJobs />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/signup" element={<Signup />} />
+        </Routes>
+      </AuthProvider>
     </BrowserRouter>
   </StrictMode>
 )
