@@ -14,25 +14,18 @@ export default function useFetchJobs() {
     setJobs([]);
 
     try {
-      const urls = [
-        `https://remotive.com/api/remote-jobs?search=${encodeURIComponent(query)}&limit=100`,
-        `https://remotive.com/api/remote-jobs?limit=100`,
-        `https://remotive.com/api/remote-jobs?category=software-dev&limit=100`,
-        `https://remotive.com/api/remote-jobs?category=data&limit=100`,
-        `https://remotive.com/api/remote-jobs?category=devops-sysadmin&limit=100`,
-      ];
-
+      const terms = [query, "developer", "engineer", "designer", "analyst", "remote"];
+      
       const results = await Promise.all(
-        urls.map(url => fetch(url).then(res => res.json()))
+        terms.map(t =>
+          fetch(`https://remotive.com/api/remote-jobs?search=${encodeURIComponent(t)}`)
+            .then(res => res.json())
+            .catch(() => ({ jobs: [] }))
+        )
       );
 
-      // Combine all jobs
       const allJobs = results.flatMap(r => r.jobs || []);
-
-      // Remove duplicates by id
-      const unique = Array.from(
-        new Map(allJobs.map(j => [j.id, j])).values()
-      );
+      const unique = Array.from(new Map(allJobs.map(j => [j.id, j])).values());
 
       if (unique.length === 0) {
         setStatus("No jobs found");
