@@ -7,50 +7,64 @@ function ResumeAnalyzer() {
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
 
-  const analyzeResume = async () => {
+  const analyzeResume = () => {
     if (!jobDesc || !resume) return;
     setLoading(true);
     setResult(null);
 
-    try {
-      const response = await fetch(
-        `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${import.meta.env.VITE_GEMINI_API_KEY}`,
-        {  method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({
-            contents: [{
-              parts: [{
-                text: `You are a professional HR expert. Analyze this resume against the job description.
+    setTimeout(() => {
+      const jobWords = jobDesc.toLowerCase().split(/\s+/);
+      const resumeText = resume.toLowerCase();
 
-Job Description:
-${jobDesc}
+      const commonSkills = [
+        "react", "javascript", "python", "node", "html", "css", "java",
+        "sql", "mongodb", "express", "typescript", "git", "api", "rest",
+        "redux", "bootstrap", "tailwind", "firebase", "aws", "docker",
+        "c++", "c#", "flutter", "kotlin", "swift", "php", "mysql",
+        "postgresql", "graphql", "next", "vue", "angular", "figma",
+        "linux", "agile", "scrum", "machine learning", "data science",
+        "excel", "communication", "teamwork", "problem solving"
+      ];
 
-Resume:
-${resume}
+      const matched = [];
+      const missing = [];
 
-Respond ONLY in this JSON format, no extra text, no backticks:
-{
-  "matchScore": <number 0-100>,
-  "matchedSkills": [<list of matching skills>],
-  "missingSkills": [<list of missing skills>],
-  "suggestion": "<2-3 line improvement tip>"
-}`
-              }]
-            }]
-          })
+      commonSkills.forEach(skill => {
+        const inJob = jobWords.some(w => w.includes(skill) || skill.includes(w));
+        const inResume = resumeText.includes(skill);
+        if (inJob && inResume) matched.push(skill);
+        else if (inJob && !inResume) missing.push(skill);
+      });
+
+      jobWords.forEach(word => {
+        if (word.length > 4 && !commonSkills.includes(word)) {
+          if (resumeText.includes(word)) {
+            if (!matched.includes(word)) matched.push(word);
+          } else {
+            if (!missing.includes(word) && missing.length < 6) missing.push(word);
+          }
         }
-      );
+      });
 
-      const data = await response.json();
-      const text = data.candidates[0].content.parts[0].text;
-      const clean = text.replace(/```json|```/g, "").trim();
-      const parsed = JSON.parse(clean);
-      setResult(parsed);
-    } catch (err) {
-      setResult({ error: "Something went wrong. Please try again." });
-    }
+      const total = matched.length + missing.length;
+      const score = total === 0 ? 50 : Math.round((matched.length / total) * 100);
 
-    setLoading(false);
+      const suggestions = [
+        "Add more relevant keywords from the job description to pass ATS filters.",
+        "Quantify your achievements with numbers — e.g. 'Improved performance by 40%'.",
+        "Highlight your most relevant projects at the top of your resume.",
+        "Tailor your resume summary to match the exact role you are applying for.",
+      ];
+
+      setResult({
+        matchScore: score,
+        matchedSkills: matched.slice(0, 8),
+        missingSkills: missing.slice(0, 6),
+        suggestion: suggestions[Math.floor(Math.random() * suggestions.length)]
+      });
+
+      setLoading(false);
+    }, 1500);
   };
 
   const getScoreColor = (score) => {
@@ -98,7 +112,6 @@ Respond ONLY in this JSON format, no extra text, no backticks:
 
       {result && !result.error && (
         <div className="result-card">
-          {/* Score */}
           <div className="score-circle"
             style={{ borderColor: getScoreColor(result.matchScore) }}>
             <h2 style={{ color: getScoreColor(result.matchScore) }}>
@@ -108,30 +121,27 @@ Respond ONLY in this JSON format, no extra text, no backticks:
           </div>
 
           <div className="result-grid">
-            {/* Matched Skills */}
             <div className="result-section">
               <h3>✅ Matched Skills</h3>
               <div className="skills-list">
-                {result.matchedSkills.map((skill, i) => (
+                {result.matchedSkills.length > 0 ? result.matchedSkills.map((skill, i) => (
                   <span key={i} className="skill-tag matched">{skill}</span>
-                ))}
+                )) : <p style={{color:"#888"}}>No matches found</p>}
               </div>
             </div>
 
-            {/* Missing Skills */}
             <div className="result-section">
               <h3>❌ Missing Skills</h3>
               <div className="skills-list">
-                {result.missingSkills.map((skill, i) => (
+                {result.missingSkills.length > 0 ? result.missingSkills.map((skill, i) => (
                   <span key={i} className="skill-tag missing">{skill}</span>
-                ))}
+                )) : <p style={{color:"#888"}}>No missing skills!</p>}
               </div>
             </div>
           </div>
 
-          {/* Suggestion */}
           <div className="suggestion-box">
-            <h3>💡 AI Suggestion</h3>
+            <h3>💡 Suggestion</h3>
             <p>{result.suggestion}</p>
           </div>
         </div>
